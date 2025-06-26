@@ -85,7 +85,7 @@ def send_email(Name, Email, Message, To):
 
     try:
         # Connect to Gmail SMTP server with SSL encryption
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as smtp:
             # Authenticate with your Gmail credentials
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             # Send the email message
