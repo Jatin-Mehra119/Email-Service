@@ -18,8 +18,9 @@ Dependencies:
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
 from email_service import send_email  # Import the send_email function from email_service.py
+from fastapi.responses import FileResponse
+from models import EmailRequest, EmailResponse
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -37,52 +38,11 @@ app.add_middleware(
     allow_headers=["*"],        # Allow all headers
 )
 
-# Pydantic models for request/response validation
-class EmailRequest(BaseModel):
-    """
-    Email request model for structured data validation.
+@app.get("/")
+async def read_root():
+    """Serve the main HTML page for the contact form."""
+    return FileResponse("frontend/index.html")
     
-    Attributes:
-        name (str): Name of the person sending the email
-        email (EmailStr): Valid email address of the sender
-        message (str): Content of the message to be sent
-        to (str): Recipient email address
-    """
-    name: str
-    email: EmailStr
-    message: str
-    to: str
-
-class EmailResponse(BaseModel):
-    """Response model for email sending operations."""
-    message: str
-    success: bool = True
-
-class ErrorResponse(BaseModel):
-    """Error response model."""
-    error: str
-    success: bool = False
-
-@app.get("/", response_model=dict)
-async def root():
-    """
-    Welcome endpoint providing basic API information.
-    
-    Returns:
-        dict: Welcome message and API information
-    """
-    return {
-        "message": "Welcome to the Email Service API!",
-        "documentation": "Visit /swagger for interactive API documentation",
-        "endpoints": {
-            "health": "/health - Health check",
-            "send_email": "/send-email - Send email via POST",
-            "docs": "documents - Custom API documentation"
-        },
-        "version": "1.0.0",
-        "status": "operational"
-    }
-
 @app.get("/documents", response_model=dict)
 async def get_docs():
     """
