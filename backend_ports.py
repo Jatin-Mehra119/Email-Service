@@ -21,6 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from email_service import send_email  # Import the send_email function from email_service.py
 from fastapi.responses import FileResponse
 from models import EmailRequest, EmailResponse
+from datetime import datetime
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -116,10 +117,11 @@ async def health_check():
     Returns:
         dict: Current status of the API service
     """
+    current_time = datetime.now().isoformat()
     return {
         "status": "healthy",
         "service": "Email Service API",
-        "timestamp": "2025-06-26",
+        "timestamp": current_time,
         "version": "1.0.0"
     }
 
