@@ -26,7 +26,7 @@ from datetime import datetime
 # Create FastAPI application instance
 app = FastAPI(
     title="Email Service API",
-    description="A REST API for sending emails through contact forms",
+    description="A powerful REST API that transforms any website's contact form into an intelligent email delivery system with AI-enhanced content generation",
     version="1.0.0"
 )
 
