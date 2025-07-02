@@ -16,13 +16,16 @@ Dependencies:
     - email_service (local module)
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from email_service import send_email  # Import the send_email function from email_service.py
 from fastapi.responses import FileResponse
 from models import EmailRequest, EmailResponse
 from datetime import datetime
-
+from dotenv import load_dotenv
+import os
+# Load environment variables from .env file
+load_dotenv()
 # Create FastAPI application instance
 app = FastAPI(
     title="Email Service API",
@@ -38,6 +41,30 @@ app.add_middleware(
     allow_methods=["*"],        # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],        # Allow all headers
 )
+
+
+# Secure the API with an API key
+if not os.getenv("API_KEY"):
+    raise RuntimeError("API_KEY environment variable must be set")
+
+API_KEY = os.getenv("API_KEY")
+
+def validate_api_key(api_key: str = Header(..., alias="X-API-Key", description="API Key for authentication")):
+    """
+    Validate the provided API key against the configured environment variable.
+    
+    Args:
+        api_key (str): The API key to validate
+        
+    Returns:
+        bool: True if the API key is valid, False otherwise
+    """
+    if api_key != API_KEY:
+        raise HTTPException(
+            status_code=403, 
+            detail="Invalid API Key"
+        )
+    return True
 
 @app.get("/")
 async def read_root():
@@ -125,7 +152,7 @@ async def health_check():
         "version": "1.0.0"
     }
 
-@app.post("/send-email", response_model=EmailResponse)
+@app.post("/send-email", response_model=EmailResponse, dependencies=[Depends(validate_api_key)])
 async def send_email_endpoint(email_data: EmailRequest):
     """
     Send an email using the configured email service.
@@ -179,7 +206,7 @@ async def send_email_endpoint(email_data: EmailRequest):
         )
 
 # Alternative endpoint with query parameters (for backward compatibility)
-@app.post("/send-email-query")
+@app.post("/send-email-query", dependencies=[Depends(validate_api_key)])
 async def send_email_query_endpoint(
     name: str = Query(..., description="Name of the person sending the email"),
     email: str = Query(..., description="Email address of the sender"),

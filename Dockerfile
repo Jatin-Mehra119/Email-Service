@@ -16,6 +16,8 @@ RUN python -m pip install --no-cache-dir --upgrade pip && \
 # Set environment variables placeholders (these will be set by Render)
 ENV EMAIL_USER=""
 ENV EMAIL_PASS=""
+ENV API_KEY=""
+ENV GOOGLE_API_KEY=""
 
 # Copy app code
 COPY . .
