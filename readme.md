@@ -14,7 +14,8 @@ A powerful REST API that transforms any website's contact form into an intellige
 - 📧 Reliable Gmail SMTP delivery
 - ⚡ Fast, lightweight FastAPI backend
 - 🐳 Docker-ready for easy deployment
-- 🔒 Secure email handling
+- 🔒 Secure email handling with API key authentication
+- 🛡️ Protected endpoints to prevent unauthorized access
 
 Simply integrate this API with your website's contact form and let it handle the rest - from content enhancement to reliable delivery.
 
@@ -80,6 +81,7 @@ Create a `.env` file:
 EMAIL_USER=your-gmail@gmail.com
 EMAIL_PASS=your-app-password
 GOOGLE_API_KEY=your-google-api-key
+API_KEY=Your custom API # To access this REST API (API Key for authentication)
 ```
 
 3. **Run the service**
@@ -96,6 +98,14 @@ API available at: http://localhost:7860
 **Endpoint**: `POST /send-email`
 
 **Live Endpoint**: https://email-service-9f1z.onrender.com/send-email
+
+**Authentication**: All email endpoints require API key authentication via the `X-API-Key` header.
+
+**Headers**:
+```
+Content-Type: application/json
+X-API-Key: your-api-key-here
+```
 
 **Request**:
 ```json
@@ -115,17 +125,45 @@ API available at: http://localhost:7860
 }
 ```
 
+**Error Response** (Invalid API Key):
+```json
+{
+    "detail": "Invalid API Key"
+}
+```
+
 ### Example Usage
 
 ```bash
 curl -X POST "https://email-service-9f1z.onrender.com/send-email" \
   -H "Content-Type: application/json" \
+  -H "X-API-Key: your-api-key-here" \
   -d '{
     "name": "John Doe",
     "email": "john@example.com",
     "message": "Hello, this is a test message!",
     "to": "contact@yoursite.com"
   }'
+```
+
+### JavaScript Example
+
+```javascript
+fetch('https://email-service-9f1z.onrender.com/send-email', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'your-api-key-here'
+  },
+  body: JSON.stringify({
+    name: 'John Doe',
+    email: 'john@example.com',
+    message: 'Hello, this is a test message!',
+    to: 'contact@yoursite.com'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ```
 
 ## Gmail Setup
@@ -140,9 +178,24 @@ curl -X POST "https://email-service-9f1z.onrender.com/send-email" \
 2. Create a new API key for Gemini
 3. Add the API key to your `.env` file as `GOOGLE_API_KEY`
 
+## Security
+
+The API now includes mandatory API key authentication to ensure secure access to email endpoints. This prevents unauthorized usage and protects your email service from abuse.
+
+**Authentication Method**: 
+- All email sending endpoints require a valid API key
+- API key must be provided in the `X-API-Key` header
+- Invalid or missing API keys return a 403 Forbidden error
+
+**Setting up API Key**:
+1. Generate a secure API key (recommended: use a UUID or cryptographically secure random string)
+2. Add it to your `.env` file as `API_KEY=your-secure-api-key`
+3. Include the API key in all requests to protected endpoints
+
 ## Requirements
 
 - Python 3.7+
 - Gmail account with 2FA enabled
 - App-specific password for Gmail
 - Google API key for AI features
+- Secure API key for authentication (required)
