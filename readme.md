@@ -91,7 +91,7 @@ python backend_ports.py
 
 API available at: http://localhost:7860
 
-**Live API**: https://email-service-9f1z.onrender.com/docs
+**Live API (Documentation)**: https://email-service-peach-delta.vercel.app/docs
 
 ## API Usage
 
@@ -135,7 +135,7 @@ X-API-Key: your-api-key-here
 ### Example Usage
 
 ```bash
-curl -X POST "https://email-service-9f1z.onrender.com/send-email" \
+curl -X POST "https://email-service-peach-delta.vercel.app/send-email" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: your-api-key-here" \
   -d '{
@@ -149,7 +149,7 @@ curl -X POST "https://email-service-9f1z.onrender.com/send-email" \
 ### JavaScript Example
 
 ```javascript
-fetch('https://email-service-9f1z.onrender.com/send-email', {
+fetch('https://email-service-peach-delta.vercel.app/send-email', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
