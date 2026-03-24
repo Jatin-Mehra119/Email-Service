@@ -97,7 +97,7 @@ API available at: http://localhost:7860
 
 **Endpoint**: `POST /send-email`
 
-**Live Endpoint**: https://email-service-9f1z.onrender.com/send-email
+**Live Endpoint**: https://email-service-peach-delta.vercel.app/send-email
 
 **Authentication**: All email endpoints require API key authentication via the `X-API-Key` header.
 
